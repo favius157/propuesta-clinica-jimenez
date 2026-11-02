@@ -632,7 +632,15 @@ document.getElementById('form').addEventListener('submit', async e=>{
     document.getElementById('resumen').scrollIntoView({ behavior:'smooth', block:'start' });
   } catch(err){
     btn.disabled = false;
-    msg.innerHTML = '<span class="err">No se pudo enviar. Revise su conexión e intente de nuevo; si continúa, escríbanos por WhatsApp.</span>';
+    const m = String(err && err.message || '');
+    if (/activat/i.test(m)) {
+      msg.innerHTML = '<span class="err">El formulario está pendiente de activación. Se envió un correo de FormSubmit a la cuenta de UNISOFT; cuando se active, vuelva a enviar.</span>';
+    } else if (err instanceof TypeError) {
+      msg.innerHTML = '<span class="err">No hay conexión con el servicio de envío. Revise su internet e intente de nuevo.</span>';
+    } else {
+      msg.innerHTML = '<span class="err">No se pudo enviar: ' + esc(m || 'error desconocido') + '</span>';
+    }
+    console.error('FormSubmit:', err);
   }
 });
 
