@@ -364,7 +364,7 @@ footer .wrap{padding-block:28px 40px;color:var(--muted);font-size:14px;display:f
   </section>
 </main>
 
-<footer><div class="wrap"><span>UNISOFT · Soluciones tecnológicas · Contacto: Favio Lopez</span><span>Propuesta para Clínica Jiménez · 28 de octubre de 2026 · Válida 30 días · v5</span></div></footer>
+<footer><div class="wrap"><span>UNISOFT · Soluciones tecnológicas · Contacto: Favio Lopez</span><span>Propuesta para Clínica Jiménez · 28 de octubre de 2026 · Válida 30 días · v6</span></div></footer>
 
 <div class="mbar" aria-hidden="false"><span>Total <b class="num" id="m-total">Bs 0</b></span><a href="#resumen">Ver resumen</a></div>
 
@@ -577,7 +577,7 @@ function summaryText(){
     'Soporte después de la garantía: Bs 230 por hora',
     `Forma de pago: ${payTxt}`].filter(Boolean).join('\n');
 }
-const ENDPOINT = 'PEGAR_AQUI_URL_APPS_SCRIPT';
+const ENDPOINT = 'https://script.google.com/macros/s/AKfycbzRZAZcI9H9xHW5xZ6qFrEU3Eh5wemkvtt_fGvmRX-TQ0byyIKgVXBUZcHaLOuVNfQhWg/exec';
 const LOCK_KEY = 'unisoft-clinica-jimenez-enviado';
 const store = {
   get(){ try { return JSON.parse(localStorage.getItem(LOCK_KEY) || 'null'); } catch(e){ return null; } },
