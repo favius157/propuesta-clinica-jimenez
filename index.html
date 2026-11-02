@@ -602,16 +602,16 @@ function esc(t){ return String(t).replace(/[&<>"']/g, c=>({'&':'&amp;','<':'&lt;
 document.getElementById('form').addEventListener('submit', async e=>{
   e.preventDefault();
   const f = e.target, msg = document.getElementById('send-msg'), btn = document.getElementById('send');
-  const nombre = 'Joel Quispe', email = f.email.value.trim();
+  const email = f.email.value.trim();
   if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)){ msg.innerHTML = '<span class="err">Escriba un correo válido para recibir su copia.</span>'; f.email.focus(); return; }
   if (f._honey.value) return;
   const pr = pricing(), chat = sel.has('citas') ? 300 : 0, h = HOST[host].m;
   const payTxt = pay==='hitos' ? 'Por hitos (40/30/20/10)' : `40% inicial + ${pay==='c6'?6:8} cuotas de ${money(pr.total*.6/(pay==='c6'?6:8))}`;
   const fecha = new Date().toLocaleString('es-BO', { dateStyle:'long', timeStyle:'short' });
   const payload = {
-    _subject: `Selección de propuesta · Clínica Jiménez · ${nombre}`,
+    _subject: `Selección de propuesta · Clínica Jiménez · ${email}`,
     _cc: email, _template: 'table', _captcha: 'false',
-    'Cliente': nombre, 'email': email,
+    'Correo del cliente': email, 'email': email,
     'Módulos': MODS.filter(m=>sel.has(m.id)).map(m=>`${m.code} ${m.name}`).join(', '),
     'Paquete aplicado': pr.plan ? pr.plan.name : 'A medida',
     'Inversión única': money(pr.total),
@@ -627,7 +627,7 @@ document.getElementById('form').addEventListener('submit', async e=>{
     const r = await fetch(ENDPOINT, { method:'POST', headers:{'Content-Type':'application/json', 'Accept':'application/json'}, body: JSON.stringify(payload) });
     const j = await r.json().catch(()=>({}));
     if (!r.ok || String(j.success) !== 'true') throw new Error(j.message || 'No se pudo enviar');
-    const rec = { sel:[...sel], host, pay, nombre, email, fecha };
+    const rec = { sel:[...sel], host, pay, email, fecha };
     store.set(rec); lockPage(rec);
     document.getElementById('resumen').scrollIntoView({ behavior:'smooth', block:'start' });
   } catch(err){
