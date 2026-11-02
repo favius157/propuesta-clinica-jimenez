@@ -240,11 +240,7 @@ footer .wrap{padding-block:28px 40px;color:var(--muted);font-size:14px;display:f
           <div>
             <div class="lbl">Enviar mi selección</div>
             <form class="form" id="form" novalidate>
-              <label for="f-nombre">Nombre completo *<input id="f-nombre" name="nombre" autocomplete="name" required></label>
-              <label for="f-cargo">Cargo<input id="f-cargo" name="cargo" autocomplete="organization-title"></label>
-              <label for="f-email">Correo electrónico *<input id="f-email" name="email" type="email" autocomplete="email" required></label>
-              <label for="f-tel">Teléfono o WhatsApp<input id="f-tel" name="telefono" type="tel" autocomplete="tel"></label>
-              <label for="f-com">Comentarios<textarea id="f-com" name="comentarios"></textarea></label>
+              <label for="f-email">Su correo electrónico<input id="f-email" name="email" type="email" autocomplete="email" required></label>
               <input class="hp" type="text" name="_honey" id="f-honey" tabindex="-1" autocomplete="off" aria-hidden="true">
               <button type="submit" class="copy" id="send">Enviar mi selección</button>
               <div class="copy-msg" id="send-msg">Le llegará una copia a su correo. La selección se puede enviar una sola vez.</div>
@@ -597,7 +593,7 @@ function lockPage(rec){
   document.querySelectorAll('.plan, .seg button').forEach(b=>b.disabled = true);
   document.getElementById('form').hidden = true;
   const s = document.getElementById('sent'); s.hidden = false;
-  s.innerHTML = `<b>Selección enviada</b>Gracias, ${esc(rec.nombre)}. Recibimos su selección el ${rec.fecha} y le enviamos una copia a ${esc(rec.email)}. Nos pondremos en contacto con usted.`;
+  s.innerHTML = `<b>Selección enviada</b>Gracias. Recibimos su selección el ${rec.fecha} y le enviamos una copia a ${esc(rec.email)}. Nos pondremos en contacto con usted.`;
   document.getElementById('lockbar').hidden = false;
   document.getElementById('lockmsg').textContent = `Esta propuesta ya fue enviada el ${rec.fecha}. Se muestra la selección enviada; para cambiarla, contáctenos.`;
 }
@@ -606,8 +602,7 @@ function esc(t){ return String(t).replace(/[&<>"']/g, c=>({'&':'&amp;','<':'&lt;
 document.getElementById('form').addEventListener('submit', async e=>{
   e.preventDefault();
   const f = e.target, msg = document.getElementById('send-msg'), btn = document.getElementById('send');
-  const nombre = f.nombre.value.trim(), email = f.email.value.trim();
-  if (!nombre){ msg.innerHTML = '<span class="err">Escriba su nombre completo.</span>'; f.nombre.focus(); return; }
+  const nombre = 'Joel Quispe', email = f.email.value.trim();
   if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)){ msg.innerHTML = '<span class="err">Escriba un correo válido para recibir su copia.</span>'; f.email.focus(); return; }
   if (f._honey.value) return;
   const pr = pricing(), chat = sel.has('citas') ? 300 : 0, h = HOST[host].m;
@@ -616,7 +611,7 @@ document.getElementById('form').addEventListener('submit', async e=>{
   const payload = {
     _subject: `Selección de propuesta · Clínica Jiménez · ${nombre}`,
     _cc: email, _template: 'table', _captcha: 'false',
-    'Nombre': nombre, 'Cargo': f.cargo.value.trim() || '—', 'email': email, 'Teléfono': f.telefono.value.trim() || '—',
+    'Cliente': nombre, 'email': email,
     'Módulos': MODS.filter(m=>sel.has(m.id)).map(m=>`${m.code} ${m.name}`).join(', '),
     'Paquete aplicado': pr.plan ? pr.plan.name : 'A medida',
     'Inversión única': money(pr.total),
@@ -625,7 +620,6 @@ document.getElementById('form').addEventListener('submit', async e=>{
     'Fijo mensual': money(chat+h) + (chat ? ' (incluye mantenimiento del chatbot Bs 300)' : ''),
     'Soporte': 'Bs 230 por hora después de la garantía',
     'Forma de pago': payTxt,
-    'Comentarios': f.comentarios.value.trim() || '—',
     'Fecha de envío': fecha
   };
   btn.disabled = true; msg.textContent = 'Enviando…';
