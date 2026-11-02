@@ -2,7 +2,8 @@
  * Envío de la selección de la propuesta (Clínica Jiménez) desde el Gmail de UNISOFT.
  * Publicar como Aplicación web: Ejecutar como "Yo", acceso "Cualquier usuario".
  */
-const DESTINO = 'faviolpz58@gmail.com';
+const DESTINO = 'faviolpz58@gmail.com,juanhosting@gmail.com';
+const RESPONDER_A = 'faviolpz58@gmail.com';
 const REMITENTE = 'UNISOFT';
 
 function doPost(e) {
@@ -37,7 +38,7 @@ function doPost(e) {
     // Copia para el cliente
     MailApp.sendEmail({
       to: email,
-      replyTo: DESTINO,
+      replyTo: RESPONDER_A,
       subject: 'Su selección · Propuesta UNISOFT para Clínica Jiménez',
       htmlBody: cuerpo('Gracias. Recibimos su selección de la propuesta. Este es el resumen de lo que eligió; nos pondremos en contacto con usted.'),
       name: REMITENTE
