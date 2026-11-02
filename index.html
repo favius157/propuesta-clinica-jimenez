@@ -364,7 +364,7 @@ footer .wrap{padding-block:28px 40px;color:var(--muted);font-size:14px;display:f
   </section>
 </main>
 
-<footer><div class="wrap"><span>UNISOFT · Soluciones tecnológicas · Contacto: Favio Lopez</span><span>Propuesta para Clínica Jiménez · 28 de octubre de 2026 · Válida 30 días · v4</span></div></footer>
+<footer><div class="wrap"><span>UNISOFT · Soluciones tecnológicas · Contacto: Favio Lopez</span><span>Propuesta para Clínica Jiménez · 28 de octubre de 2026 · Válida 30 días · v5</span></div></footer>
 
 <div class="mbar" aria-hidden="false"><span>Total <b class="num" id="m-total">Bs 0</b></span><a href="#resumen">Ver resumen</a></div>
 
@@ -577,7 +577,7 @@ function summaryText(){
     'Soporte después de la garantía: Bs 230 por hora',
     `Forma de pago: ${payTxt}`].filter(Boolean).join('\n');
 }
-const ENDPOINT = 'https://formsubmit.co/ajax/faviolpz58@gmail.com';
+const ENDPOINT = 'PEGAR_AQUI_URL_APPS_SCRIPT';
 const LOCK_KEY = 'unisoft-clinica-jimenez-enviado';
 const store = {
   get(){ try { return JSON.parse(localStorage.getItem(LOCK_KEY) || 'null'); } catch(e){ return null; } },
@@ -608,23 +608,21 @@ document.getElementById('form').addEventListener('submit', async e=>{
   const pr = pricing(), chat = sel.has('citas') ? 300 : 0, h = HOST[host].m;
   const payTxt = pay==='hitos' ? 'Por hitos (40/30/20/10)' : `40% inicial + ${pay==='c6'?6:8} cuotas de ${money(pr.total*.6/(pay==='c6'?6:8))}`;
   const fecha = new Date().toLocaleString('es-BO', { dateStyle:'long', timeStyle:'short' });
-  const payload = {
-    _subject: `Selección de propuesta · Clínica Jiménez · ${email}`,
-    _cc: email, _template: 'table', _captcha: 'false',
-    'Correo del cliente': email, 'email': email,
-    'Módulos': MODS.filter(m=>sel.has(m.id)).map(m=>`${m.code} ${m.name}`).join(', '),
-    'Paquete aplicado': pr.plan ? pr.plan.name : 'A medida',
-    'Inversión única': money(pr.total),
-    'Plazo estimado': `${weeks()} semanas`,
-    'Alojamiento': HOST[host].label,
-    'Fijo mensual': money(chat+h) + (chat ? ' (incluye mantenimiento del chatbot Bs 300)' : ''),
-    'Soporte': 'Bs 230 por hora después de la garantía',
-    'Forma de pago': payTxt,
-    'Fecha de envío': fecha
-  };
+  const filas = [
+    ['Correo del cliente', email],
+    ['Módulos', MODS.filter(m=>sel.has(m.id)).map(m=>`${m.code} ${m.name}`).join(', ')],
+    ['Paquete aplicado', pr.plan ? pr.plan.name : 'A medida'],
+    ['Inversión única', money(pr.total)],
+    ['Plazo estimado', `${weeks()} semanas`],
+    ['Alojamiento', HOST[host].label],
+    ['Fijo mensual', money(chat+h) + (chat ? ' (incluye mantenimiento del chatbot Bs 300)' : '')],
+    ['Soporte', 'Bs 230 por hora después de la garantía'],
+    ['Forma de pago', payTxt],
+    ['Fecha de envío', fecha]
+  ];
   btn.disabled = true; msg.textContent = 'Enviando…';
   try {
-    const r = await fetch(ENDPOINT, { method:'POST', headers:{'Content-Type':'application/json', 'Accept':'application/json'}, body: JSON.stringify(payload) });
+    const r = await fetch(ENDPOINT, { method:'POST', body: JSON.stringify({ email, filas }) });
     const j = await r.json().catch(()=>({}));
     if (!r.ok || String(j.success) !== 'true') throw new Error(j.message || 'No se pudo enviar');
     const rec = { sel:[...sel], host, pay, email, fecha };
@@ -633,14 +631,12 @@ document.getElementById('form').addEventListener('submit', async e=>{
   } catch(err){
     btn.disabled = false;
     const m = String(err && err.message || '');
-    if (/activat/i.test(m)) {
-      msg.innerHTML = '<span class="err">El formulario está pendiente de activación. Se envió un correo de FormSubmit a la cuenta de UNISOFT; cuando se active, vuelva a enviar.</span>';
-    } else if (err instanceof TypeError) {
+    if (err instanceof TypeError) {
       msg.innerHTML = '<span class="err">No hay conexión con el servicio de envío. Revise su internet e intente de nuevo.</span>';
     } else {
       msg.innerHTML = '<span class="err">No se pudo enviar: ' + esc(m || 'error desconocido') + '</span>';
     }
-    console.error('FormSubmit:', err);
+    console.error('Envío:', err);
   }
 });
 
