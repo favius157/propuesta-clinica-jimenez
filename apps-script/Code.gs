@@ -1,5 +1,5 @@
 /**
- * Envío de la selección de la propuesta (Clínica Jiménez) desde el Gmail de UNISOFT.
+ * Envío de la selección de las propuestas modulares desde el Gmail de UNISOFT.
  * Publicar como Aplicación web: Ejecutar como "Yo", acceso "Cualquier usuario".
  */
 const DESTINO = 'faviolpz58@gmail.com,juanhosting@gmail.com';
@@ -14,6 +14,7 @@ function doPost(e) {
     const email = String(data.email || '').trim();
     if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) return json_({ success: false, message: 'Correo no válido' });
     const filas = Array.isArray(data.filas) ? data.filas.slice(0, 30) : [];
+    const cliente = String(data.cliente || 'Clínica Jiménez').trim().slice(0, 80) || 'Clínica Jiménez';
 
     const tabla = filas.map(function (f) {
       return '<tr><td style="padding:8px 12px;border:1px solid #d3e1e2;background:#eef4f4;font-weight:bold;white-space:nowrap">'
@@ -31,15 +32,15 @@ function doPost(e) {
     MailApp.sendEmail({
       to: DESTINO,
       replyTo: email,
-      subject: 'Selección de propuesta · Clínica Jiménez · ' + email,
-      htmlBody: cuerpo('Se recibió una selección de la propuesta modular para Clínica Jiménez. Correo del cliente: <b>' + esc_(email) + '</b>.'),
+      subject: 'Selección de propuesta · ' + cliente + ' · ' + email,
+      htmlBody: cuerpo('Se recibió una selección de la propuesta modular para <b>' + esc_(cliente) + '</b>. Correo del cliente: <b>' + esc_(email) + '</b>.'),
       name: REMITENTE
     });
     // Copia para el cliente
     MailApp.sendEmail({
       to: email,
       replyTo: RESPONDER_A,
-      subject: 'Su selección · Propuesta UNISOFT para Clínica Jiménez',
+      subject: 'Su selección · Propuesta UNISOFT para ' + cliente,
       htmlBody: cuerpo('Gracias. Recibimos su selección de la propuesta. Este es el resumen de lo que eligió; nos pondremos en contacto con usted.'),
       name: REMITENTE
     });

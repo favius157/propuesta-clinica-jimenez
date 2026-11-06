@@ -1,4 +1,7 @@
-# Propuesta Clínica Jiménez · UNISOFT
+# Propuestas modulares · UNISOFT
+
+- Clínica Jiménez: raíz del sitio (`index.html`), un solo envío por navegador.
+- Centro de Salud Montero: `centro-salud-montero/`, envíos ilimitados.
 
 Configurador de la propuesta modular. El cliente elige módulos, alojamiento y forma de pago, y envía su selección por correo.
 
